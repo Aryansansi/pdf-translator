@@ -1,6 +1,7 @@
 PDF Translator and Audio Converter
 This Python application allows users to translate text from PDF files into various languages and convert the translated text into audio files. It provides a user-friendly graphical interface built with Tkinter.
 
+
 Features:
 
 1.Browse and select PDF files for translation and conversion.
@@ -12,6 +13,7 @@ Features:
 4.Convert the translated text into an audio file using the gTTS (Google Text-to-Speech) library.
 
 5.Multi-threaded processing for smoother user experience during translation and conversion.
+
 
 Prerequisites:
 
@@ -28,6 +30,7 @@ Before running the application, make sure you have the following dependencies in
 
 6.PDFreader
 
+
 Usage:
 
 1.Clone or download the repository to your local machine.
@@ -37,13 +40,17 @@ Usage:
 3.Run the following command to start the application:
 python pdf_translator.py
 
+
 The application window will open, allowing you to perform the following steps:
+
 1.Click the "Browse" button to select a PDF file for translation.
 
 2.Choose the target language from the dropdown menu.
 
 3.Click the "Translate and Convert" button to initiate the translation and conversion process.
+
 4.Once the process is complete, a success message will be displayed, and the audio file will be saved as "output.mp3" in the same directory as the script.
+
 
 Contributing:
 
