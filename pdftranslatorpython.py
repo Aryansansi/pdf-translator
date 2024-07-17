@@ -1,10 +1,10 @@
 import threading
-import PyPDF2
-from googletrans import Translator
+import pdfplumber
+from deep_translator import GoogleTranslator
 from gtts import gTTS
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-from pdfreader import SimplePDFViewer
+import time
 
 class PDFTranslatorApp:
     def __init__(self, root):
@@ -26,7 +26,7 @@ class PDFTranslatorApp:
         self.language_label = tk.Label(self.frame, text="Select Target Language:")
         self.language_label.grid(row=1, column=0, sticky="w")
 
-        self.languages = ["English", "French", "German", "Spanish", "Italian", "Chinese", "Japanese"]
+        self.languages = ["en", "fr", "de", "es", "it", "zh-CN", "ja"]
         self.language_var = tk.StringVar()
         self.language_dropdown = ttk.Combobox(self.frame, textvariable=self.language_var, values=self.languages)
         self.language_dropdown.current(0)
@@ -59,8 +59,23 @@ class PDFTranslatorApp:
             self.root.config(cursor="wait")
 
             pdf_text = self.extract_text_from_pdf(file_path)
+            if not pdf_text:
+                messagebox.showerror("Error", "No text found in PDF.")
+                return
+
+            print("Extracted text from PDF:", pdf_text)  # Debug print statement
+
             translated_text = self.translate_text(pdf_text, target_language)
+            if not translated_text:
+                messagebox.showerror("Error", "Translation failed.")
+                return
+
+            print("Translated text:", translated_text)  # Debug print statement
+
             audio_file = self.text_to_audio(translated_text, target_language)
+            if not audio_file:
+                messagebox.showerror("Error", "Audio conversion failed.")
+                return
 
             messagebox.showinfo("Success", "Translation and audio conversion complete!")
         except Exception as e:
@@ -71,25 +86,34 @@ class PDFTranslatorApp:
 
     def extract_text_from_pdf(self, file_path):
         text = ""
-        with open(file_path, "rb") as file:
-            pdf_viewer = SimplePDFViewer(file)
-            pdf_document = pdf_viewer.get_document()
-            num_pages = pdf_document.get_num_pages()
-            for page in range(num_pages):
-                pdf_viewer.current_page = page
-                text += pdf_viewer.render()
+        try:
+            with pdfplumber.open(file_path) as pdf:
+                for page in pdf.pages:
+                    page_text = page.extract_text()
+                    if page_text:
+                        text += page_text + "\n"
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to extract text from PDF: {str(e)}")
         return text
 
     def translate_text(self, text, target_language):
-        translator = Translator()
-        translation = translator.translate(text, dest=target_language.lower())
-        return translation.text
+        try:
+            translator = GoogleTranslator(source='auto', target=target_language)
+            translation = translator.translate(text)
+            return translation
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to translate text: {str(e)}")
+            return None
 
     def text_to_audio(self, text, target_language):
-        tts = gTTS(text, lang=target_language.lower())
-        output_file = "output.mp3"
-        tts.save(output_file)
-        return output_file
+        try:
+            tts = gTTS(text, lang=target_language.lower())
+            output_file = "output.mp3"
+            tts.save(output_file)
+            return output_file
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to convert text to audio: {str(e)}")
+            return None
 
 def main():
     root = tk.Tk()
