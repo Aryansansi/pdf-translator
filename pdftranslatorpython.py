@@ -4,7 +4,6 @@ from deep_translator import GoogleTranslator
 from gtts import gTTS
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-import time
 
 class PDFTranslatorApp:
     def __init__(self, root):
@@ -63,15 +62,14 @@ class PDFTranslatorApp:
                 messagebox.showerror("Error", "No text found in PDF.")
                 return
 
-            print("Extracted text from PDF:", pdf_text)  # Debug print statement
+            print("Extracted text from PDF:", pdf_text) 
 
             translated_text = self.translate_text(pdf_text, target_language)
             if not translated_text:
                 messagebox.showerror("Error", "Translation failed.")
                 return
 
-            print("Translated text:", translated_text)  # Debug print statement
-
+            print("Translated text:", translated_text)  
             audio_file = self.text_to_audio(translated_text, target_language)
             if not audio_file:
                 messagebox.showerror("Error", "Audio conversion failed.")
