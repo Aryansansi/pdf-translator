@@ -35,5 +35,3 @@ Before running the application, make sure you have the following dependencies in
 Contributions are welcome! If you find any bugs or have suggestions for improvements, please feel free to open an issue or submit a pull request.
 
 ---
-
-This readme provides a clear overview of your application's features, prerequisites, usage instructions, and how to contribute to the project.**
